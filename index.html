@@ -2,24 +2,67 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>SHA-256 Demo</title>
-  <!-- Load SHA-256 library from CDN -->
+  <title>Hash89 Demo</title>
+  <!-- 1) SHA-256 라이브러리 로드 (CDN) -->
   <script src="https://cdn.jsdelivr.net/npm/js-sha256@0.9.0/build/sha256.min.js"></script>
 </head>
 <body>
-  <h1>SHA-256 Demo</h1>
-  <p>Type something and click "Compute"</p>
-  <input id="textInput" type="text" placeholder="Type here...">
-  <button onclick="computeHash()">Compute SHA-256</button>
+  <h1>Hash89 Demo</h1>
+  <p>Enter text below and click "Compute Hash89":</p>
+  
+  <!-- 사용자 입력창 -->
+  <input id="textInput" type="text" placeholder="Type here..." />
+  
+  <!-- 버튼 -->
+  <button onclick="computeHash89()">Compute Hash89</button>
+  
+  <!-- 결과 표시 -->
   <p>Result: <span id="resultSpan"></span></p>
-
+  
   <script>
-    function computeHash() {
+    /* 
+      2) Hash89 함수(비선형 변환, 예시)
+         - 실제론 더 복잡한 로직을 사용해야 보안성이 높습니다.
+         - 여기서는 간단한 "xor + sin" 예시로 89글자 산출
+    */
+    function hash89(shaString) {
+      // shaString: SHA-256 결과(64자리)
+      // 1) 타임스탬프나 난수 등 추가 요소 (간단 예)
+      const timestamp = Date.now().toString();
+      const combined = shaString + timestamp;
+      
+      let result = "";
+      
+      // 2) 간단한 비선형 루프 예시
+      for (let i = 0; i < combined.length; i++) {
+        const c = combined.charCodeAt(i);
+        // 임의의 연산: xor + i + sin
+        let val = (c ^ i) + Math.floor(Math.sin(i) * 50);
+        // 16진 변환 (2자리)
+        const hex = ((val >>> 0) & 0xff).toString(16).padStart(2, '0');
+        result += hex;
+      }
+      
+      // 3) 최종 89글자로 자르기 (혹은 부족하면 padding)
+      return result.slice(0, 89);
+    }
+    
+    /* 
+      3) computeHash89: 
+         - 1) 입력값 -> SHA-256
+         - 2) hash89(shaResult) 호출
+         - 3) 결과 페이지에 출력
+    */
+    function computeHash89() {
+      // a) 사용자 입력 가져오기
       const text = document.getElementById('textInput').value;
-      const hashValue = sha256(text); // from js-sha256 library
-      document.getElementById('resultSpan').textContent = hashValue;
+      // b) SHA-256 계산
+      const shaResult = sha256(text); // from js-sha256 library
+      // c) Hash89 변환
+      const finalHash = hash89(shaResult);
+      // d) 결과 표시
+      document.getElementById('resultSpan').textContent = finalHash;
     }
   </script>
 </body>
 </html>
-  
