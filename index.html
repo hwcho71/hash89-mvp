@@ -3,66 +3,124 @@
 <head>
   <meta charset="UTF-8">
   <title>Hash89 Demo</title>
-  <!-- 1) SHA-256 라이브러리 로드 (CDN) -->
+  <!-- 1) SHA-256 라이브러리 (js-sha256) 로드 -->
   <script src="https://cdn.jsdelivr.net/npm/js-sha256@0.9.0/build/sha256.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background: #f8f8f8;
+      text-align: center;
+    }
+    h1 {
+      margin-top: 30px;
+    }
+    .container {
+      margin: 40px auto;
+      max-width: 500px;
+      background: #fff;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 6px;
+    }
+    input[type="text"] {
+      width: 70%;
+      padding: 8px;
+      margin: 10px 0;
+    }
+    button {
+      padding: 8px 16px;
+      cursor: pointer;
+      background: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    #resultSpan {
+      display: inline-block;
+      margin-top: 20px;
+      word-wrap: break-word;
+      max-width: 90%;
+      text-align: left;
+    }
+    footer {
+      margin-top: 30px;
+      font-size: 0.9em;
+      color: #666;
+    }
+  </style>
 </head>
 <body>
+
   <h1>Hash89 Demo</h1>
-  <p>Enter text below and click "Compute Hash89":</p>
-  
-  <!-- 사용자 입력창 -->
-  <input id="textInput" type="text" placeholder="Type here..." />
-  
-  <!-- 버튼 -->
-  <button onclick="computeHash89()">Compute Hash89</button>
-  
-  <!-- 결과 표시 -->
-  <p>Result: <span id="resultSpan"></span></p>
-  
+
+  <div class="container">
+    <p>Enter text below and click <strong>"Compute Hash89"</strong> to see the result.</p>
+
+    <input id="textInput" type="text" placeholder="Type something..." />
+    <br>
+    <button onclick="computeHash89()">Compute Hash89</button>
+
+    <p style="margin-top:20px;">
+      <strong>Result:</strong>
+      <div id="resultSpan"></div>
+    </p>
+  </div>
+
+  <footer>
+    &copy; 2025 YourName - Light Computing &nbsp;|&nbsp; Demo
+  </footer>
+
   <script>
     /* 
-      2) Hash89 함수(비선형 변환, 예시)
-         - 실제론 더 복잡한 로직을 사용해야 보안성이 높습니다.
-         - 여기서는 간단한 "xor + sin" 예시로 89글자 산출
+      hash89 함수:
+      1) SHA-256 결과(shaString)를 입력받음
+      2) timestamp 등 추가 요소를 결합
+      3) 임의의 비선형 변환(간단 예시)으로 89자리 코드를 생성
     */
     function hash89(shaString) {
-      // shaString: SHA-256 결과(64자리)
-      // 1) 타임스탬프나 난수 등 추가 요소 (간단 예)
+      // 간단히 timestamp 추가
       const timestamp = Date.now().toString();
       const combined = shaString + timestamp;
       
       let result = "";
-      
-      // 2) 간단한 비선형 루프 예시
       for (let i = 0; i < combined.length; i++) {
         const c = combined.charCodeAt(i);
-        // 임의의 연산: xor + i + sin
+        // (임의) xor + sin(i)*50의 간단 예시
         let val = (c ^ i) + Math.floor(Math.sin(i) * 50);
-        // 16진 변환 (2자리)
+        // 16진수 2자리로 변환
         const hex = ((val >>> 0) & 0xff).toString(16).padStart(2, '0');
         result += hex;
       }
-      
-      // 3) 최종 89글자로 자르기 (혹은 부족하면 padding)
+
+      // 앞에서 최대 89자리만 사용
       return result.slice(0, 89);
     }
-    
-    /* 
-      3) computeHash89: 
-         - 1) 입력값 -> SHA-256
-         - 2) hash89(shaResult) 호출
-         - 3) 결과 페이지에 출력
+
+    /*
+      computeHash89:
+      1) 사용자 입력 -> SHA-256 (js-sha256)
+      2) Hash89 변환
+      3) 결과 출력
     */
     function computeHash89() {
-      // a) 사용자 입력 가져오기
       const text = document.getElementById('textInput').value;
-      // b) SHA-256 계산
-      const shaResult = sha256(text); // from js-sha256 library
-      // c) Hash89 변환
+      
+      // SHA-256 해시 (64자리 16진)
+      const shaResult = sha256(text);
+      
+      // Hash89 추가 변환
       const finalHash = hash89(shaResult);
-      // d) 결과 표시
+      
+      // 화면에 표시
       document.getElementById('resultSpan').textContent = finalHash;
     }
   </script>
+
 </body>
 </html>
