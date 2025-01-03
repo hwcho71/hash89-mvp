@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SHA-256 Demo</title>
+  <!-- Load SHA-256 library from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/js-sha256@0.9.0/build/sha256.min.js"></script>
+</head>
+<body>
+  <h1>SHA-256 Demo</h1>
+  <p>Type something and click "Compute"</p>
+  <input id="textInput" type="text" placeholder="Type here...">
+  <button onclick="computeHash()">Compute SHA-256</button>
+  <p>Result: <span id="resultSpan"></span></p>
+
+  <script>
+    function computeHash() {
+      const text = document.getElementById('textInput').value;
+      const hashValue = sha256(text); // from js-sha256 library
+      document.getElementById('resultSpan').textContent = hashValue;
+    }
+  </script>
+</body>
+</html>
+  
